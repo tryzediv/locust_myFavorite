@@ -56,8 +56,8 @@ class SimpleFavoriteUser(HttpUser):
 
             # Проверяем, что список не пустой
             if favorites_list and len(favorites_list) > 0:
-                first_favorite = favorites_list[0]  # Берём первый элемент (это словарь)
-                search_term = first_favorite.get("title")  # Теперь .get() работает!
+                first_favorite = favorites_list[0]  # Берём первый элемент
+                search_term = first_favorite.get("title")
 
                 if search_term:
                     # Ищем по этому заголовку
