@@ -41,3 +41,24 @@ class SimpleFavoriteUser(HttpUser):
         limit = random.choice([10, 25, 50])
         sort = random.choice(['new', 'az', 'za', 'rating'])
         self.client.get(f"/favorites?skip={skip}&limit={limit}&sort={sort}")
+
+    @task(5)
+    def search(self):
+        """Поиск по заголовку из первой карточки"""
+        sort = random.choice(['new', 'az', 'za', 'rating'])
+        skip = random.randint(0, 10)
+
+        # Получаем список карточек
+        response = self.client.get(f"/favorites?skip={skip}&limit=1&sort={sort}")
+
+        if response.status_code == 200:
+            favorites_list = response.json()  # Это список
+
+            # Проверяем, что список не пустой
+            if favorites_list and len(favorites_list) > 0:
+                first_favorite = favorites_list[0]  # Берём первый элемент (это словарь)
+                search_term = first_favorite.get("title")  # Теперь .get() работает!
+
+                if search_term:
+                    # Ищем по этому заголовку
+                    self.client.get(f"/favorites?skip=0&search={search_term}")
